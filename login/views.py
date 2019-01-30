@@ -123,10 +123,19 @@ def editProfile(request):
     if request.method == 'POST':
         editProfile_form = forms.EditProfileForm(request.POST)
         if editProfile_form.is_valid():
-            user.email = editProfile_form.cleaned_data['email']
-            user.sex = editProfile_form.cleaned_data['sex']
-            user.vechicleMake = editProfile_form.cleaned_data['vehicleMake']
-            user.vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+            email = editProfile_form.cleaned_data['email']
+            sex = editProfile_form.cleaned_data['sex']
+            vechicleMake = editProfile_form.cleaned_data['vehicleMake']
+            vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+            if user.driver:
+                user.vechicleMake = editProfile_form.cleaned_data['vehicleMake']
+                user.vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+            elif vechiclePlate or vechicleMake:
+                message = 'You are not a driver yet'
+                return render(request, 'login/editProfile.html', locals())
+
+            if email:
+                user.email = editProfile_form.cleaned_data['email']
             user.save()
             return render(request, 'login/profile.html', locals())
 

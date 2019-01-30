@@ -30,12 +30,12 @@ class EditProfileForm(forms.Form):
         ('f', 'female'),
     )
 
-    email = forms.EmailField(label='email address', max_length=128,
+    email = forms.EmailField(label='email address', max_length=128, required=False,
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
-    sex = forms.ChoiceField(label='sex', choices=gender)
-    vehicleMake = forms.CharField(label='vehicle make', max_length=128,
+    sex = forms.ChoiceField(label='sex', required=False, choices=gender)
+    vehicleMake = forms.CharField(label='vehicle make', max_length=128, required=False,
                           widget=forms.TextInput(attrs={'class': 'form-control'}))
-    vehiclePlate = forms.CharField(label='vehicle plate', max_length=128,
+    vehiclePlate = forms.CharField(label='vehicle plate', max_length=128, required=False,
                           widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 class RegisterDriverForm(forms.Form):
