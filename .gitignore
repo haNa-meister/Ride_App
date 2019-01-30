@@ -1,0 +1,4 @@
+.idea
+settings.py
+db.backends.postgresql_psycopg2
+mysite/__pycache__/
