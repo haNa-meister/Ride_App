@@ -14,6 +14,8 @@ def index(request):
 
 
 def login(request):
+    if request.session.get('is_login', None):
+        return redirect("/profile/")
     if request.method == "POST":
         login_form = forms.UserForm(request.POST)
         massage = ''
@@ -24,8 +26,10 @@ def login(request):
             try:
                 user = models.User.objects.get(name=username)
                 if user.password == password:
-                    print('password correct')
-                    return redirect('/index/')
+                    request.session['is_login'] = True
+                    request.session['user_id'] = user.id
+                    request.session['user_name'] = user.name
+                    return redirect('/profile/')
                 else:
                     message = 'Invalid Password'
 
@@ -56,9 +60,6 @@ def register(request):
                     message = 'Not a unique username'
                     return render(request, 'login/register.html', locals())
                 same_email_user = models.User.objects.filter(email=email)
-                if same_email_user:  # unique email address
-                    message = 'Not a unique email address'
-                    return render(request, 'login/register.html', locals())
 
                 new_user = models.User()
                 new_user.name = username
@@ -66,11 +67,68 @@ def register(request):
                 new_user.email = email
                 new_user.sex = sex
                 new_user.save()
-                return redirect('/login/')
+                redirect('/profile/')
+                return render(request, 'login/profile.html', locals())
+
     register_form = forms.RegisterForm()
     return render(request, 'login/register.html', locals())
 
 
 def logout(request):
-    pass
-    return render(request, '../templates/logout.html')
+    if not request.session.get('is_login', None):
+        return redirect("/index/")
+    request.session.flush()
+    return redirect("/index/")
+
+
+def profile(request):
+    user = models.User.objects.get(name=request.session.get('user_name'))
+    if request.POST:
+        if 'edit' in request.POST:
+            editProfile_form = forms.EditProfileForm()
+            return render(request, 'login/editProfile.html', locals())
+        elif 'regDriver' in request.POST:
+            reg_form = forms.RegisterDriverForm()
+            if user.driver:
+                message = 'You are already a driver'
+                return render(request, 'login/profile.html', locals())
+            else:
+                return render(request, 'login/registerDriver.html', locals())
+    else:
+        return render(request, 'login/profile.html', locals())
+
+
+def registerDriver(request):
+    message = ''
+    user = models.User.objects.get(name=request.session.get('user_name'))
+
+    if request.method == 'POST':
+        reg_form = forms.RegisterDriverForm(request.POST)
+        if reg_form.is_valid():
+            vehicleMake = reg_form.cleaned_data['vehicleMake']
+            vehiclePlate = reg_form.cleaned_data['vehiclePlate']
+            user.vechicleMake = vehicleMake
+            user.vechiclePlate = vehiclePlate
+            user.driver = True
+            user.save()
+            return render(request, 'login/profile.html', locals())
+
+    reg_form = forms.RegisterDriverForm()
+    return render(request, 'login/registerDriver.html', locals())
+
+
+def editProfile(request):
+    message = ''
+    user = models.User.objects.get(name=request.session.get('user_name'))
+    if request.method == 'POST':
+        editProfile_form = forms.EditProfileForm(request.POST)
+        if editProfile_form.is_valid():
+            user.email = editProfile_form.cleaned_data['email']
+            user.sex = editProfile_form.cleaned_data['sex']
+            user.vechicleMake = editProfile_form.cleaned_data['vehicleMake']
+            user.vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+            user.save()
+            return render(request, 'login/profile.html', locals())
+
+    editProfile_form = forms.EditProfileForm()
+    return render(request, 'login/editProfile.html', locals())

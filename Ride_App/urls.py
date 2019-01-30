@@ -24,4 +24,7 @@ urlpatterns = [
     url(r'^login/', views.login),
     url(r'^register/', views.register),
     url(r'^logout/', views.logout),
+    url(r'^profile/', views.profile),
+    url(r'^registerDriver/', views.registerDriver),
+    url(r'^editProfile/', views.editProfile),
 ]

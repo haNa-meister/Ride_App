@@ -1,5 +1,6 @@
 from django import forms
-
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.forms import ModelForm
 
 class UserForm(forms.Form):
     username = forms.CharField(label='username', max_length=128,
@@ -21,3 +22,24 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(label='email address',
                              widget=forms.EmailInput(attrs={'class': 'form-control'}))
     sex = forms.ChoiceField(label='sex', choices=gender)
+
+
+class EditProfileForm(forms.Form):
+    gender = (
+        ('m', 'male'),
+        ('f', 'female'),
+    )
+
+    email = forms.EmailField(label='email address', max_length=128,
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    sex = forms.ChoiceField(label='sex', choices=gender)
+    vehicleMake = forms.CharField(label='vehicle make', max_length=128,
+                          widget=forms.TextInput(attrs={'class': 'form-control'}))
+    vehiclePlate = forms.CharField(label='vehicle plate', max_length=128,
+                          widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+class RegisterDriverForm(forms.Form):
+    vehicleMake = forms.CharField(label='vehicle make', max_length=128,
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
+    vehiclePlate = forms.CharField(label='vehicle plate', max_length=128,
+                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
