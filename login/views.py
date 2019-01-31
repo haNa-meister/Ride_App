@@ -99,6 +99,8 @@ def profile(request):
         elif 'reqRide' in request.POST:
             req_form = ride_form.reqForm()
             return render(request, 'ride/requestRide.html', locals())
+        elif 'viewRide' in request.POST:
+            return redirect('/viewRide/')
 
     else:
         return render(request, 'login/profile.html', locals())
