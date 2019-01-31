@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^registerDriver/', login_views.registerDriver),
     url(r'^editProfile/', login_views.editProfile),
     url(r'^reqRide/', ride_views.reqRide),
-    url(r'^editRide/', ride_views.editRide),
+    path('editRide/<int:ride_id>/', ride_views.editRide),
     url(r'^viewRide/', ride_views.viewRide),
     url(r'^searchRideAsDriver/', ride_views.searchRideAsDriver),
     url(r'^searchRideAsSharer/', ride_views.searchRideAsSharer),

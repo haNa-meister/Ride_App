@@ -46,6 +46,7 @@ def register(request):
     if request.method == "POST":
         register_form = forms.RegisterForm(request.POST)
         message = ''
+        print('register_form.is_valid:' + str(register_form.is_valid()))
         if register_form.is_valid():
             username = register_form.cleaned_data['username']
             password1 = register_form.cleaned_data['password1']
@@ -61,7 +62,6 @@ def register(request):
                     message = 'Not a unique username'
                     return render(request, 'login/register.html', locals())
                 same_email_user = models.User.objects.filter(email=email)
-
                 new_user = models.User()
                 new_user.name = username
                 new_user.password = password1
@@ -83,6 +83,7 @@ def logout(request):
 
 
 def profile(request):
+    print('user: {}'.format(request.session.get('user_name')))
     user = models.User.objects.get(name=request.session.get('user_name'))
     if request.POST:
         if 'edit' in request.POST:
@@ -105,6 +106,7 @@ def profile(request):
 
 def registerDriver(request):
     message = ''
+    print('user:{} register as Drive'.format(request.session.get('user_name')))
     user = models.User.objects.get(name=request.session.get('user_name'))
 
     if request.method == 'POST':

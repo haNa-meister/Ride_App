@@ -1,6 +1,6 @@
 from django.db import models
-from login.models import User
-# Create your models here.
+from django.urls import reverse  # To generate URLS by reversing URL patterns
+# from login import models
 
 
 class Ride(models.Model):
@@ -21,6 +21,11 @@ class Ride(models.Model):
     status = models.CharField(max_length=32, choices=status, default='open')
     driver_name = models.CharField(max_length=128, unique=False, blank=True)
 
+    def get_absolute_url(self):
+         """
+         Returns the url to access a particular instance of Ride.
+         """
+         return reverse('model-detail-view', args=[str(self.id)])
 
 class Share(models.Model):
     ride = models.ForeignKey('Ride', on_delete=models.CASCADE)

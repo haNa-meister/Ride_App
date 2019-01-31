@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Ride Sharing System{% endblock %}
+{% block css %}
+    <link href="/static/css/login.css" rel="stylesheet" />
+{% endblock %}
+
+
+{% block content %}
+    <h1>Current requests list </h1>
+    {% if reqest_list %}
+    <ul>
+      {% for req in reqest_list %}
+      <li>
+          <div class="form-group">
+            ride ID: {{ req.ride_id }}, owner_name: {{ req.owner_name}}
+
+          </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>There are no request.</p>
+    {% endif %}
+{% endblock %}

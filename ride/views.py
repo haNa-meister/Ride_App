@@ -43,11 +43,53 @@ def reqRide(request):
     return render(request, 'ride/requestRide.html', locals())
 
 
-def editRide():
-    return
+def editRide(request, ride_id):
+    print(ride_id)
+    # message = ''
+    # user = models.User.objects.get(name=request.session.get('user_name'))
+    # if request.method == 'POST':
+    #     editProfile_form = forms.EditProfileForm(request.POST)
+    #     if editProfile_form.is_valid():
+    #         email = editProfile_form.cleaned_data['email']
+    #         sex = editProfile_form.cleaned_data['sex']
+    #         vechicleMake = editProfile_form.cleaned_data['vehicleMake']
+    #         vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+    #         if user.driver:
+    #             user.vechicleMake = editProfile_form.cleaned_data['vehicleMake']
+    #             user.vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+    #         elif vechiclePlate or vechicleMake:
+    #             message = 'You are not a driver yet'
+    #             return render(request, 'login/editProfile.html', locals())
+    #
+    #         if email:
+    #             user.email = editProfile_form.cleaned_data['email']
+    #         user.save()
+    #         return render(request, 'login/profile.html', locals())
 
-def viewRide():
-    return
+    editProfile_form = forms.EditProfileForm()
+    return render(request, 'login/editProfile.html', locals())
+
+def viewRide(request):
+    user = login_model.User.objects.get(name=request.session.get('user_name'))
+    owner_requests = models.Ride.objects.filter(owner_name=user)
+    pass_in = []
+    for re in owner_requests:
+        dic = {}
+        dic['ride_id'] = re.ride_id
+        dic['owner_name'] = re.owner_name.name
+        pass_in.append(dic)
+        print(re.ride_id)
+    share_request = models.Share.objects.filter(sharer_name=user.name)
+
+    for sh in share_request:
+        re = sh.ride
+        dic = {}
+        dic['ride_id'] = re.ride_id
+        dic['owner_name'] = re.owner_name.name
+        pass_in.append(dic)
+        print(re.ride_id)
+
+    return render(request, 'ride/viewRides.html', {'reqest_list':pass_in})
 
 
 def searchRideAsDriver():
