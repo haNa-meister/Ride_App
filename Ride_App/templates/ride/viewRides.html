@@ -12,8 +12,8 @@
       {% for req in reqest_list %}
       <li>
           <div class="form-group">
-            ride ID: {{ req.ride_id }}, owner_name: {{ req.owner_name}}
 
+            <a href="{{ req.get_absolute_url }}">ride ID: {{ req.ride_id }}</a> owner_name: {{ req.owner_name}}
           </div>
       </li>
       {% endfor %}

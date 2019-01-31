@@ -77,6 +77,7 @@ def viewRide(request):
         dic = {}
         dic['ride_id'] = re.ride_id
         dic['owner_name'] = re.owner_name.name
+        dic['get_absolute_url'] = re.get_absolute_url()
         pass_in.append(dic)
         print(re.ride_id)
     share_request = models.Share.objects.filter(sharer_name=user.name)

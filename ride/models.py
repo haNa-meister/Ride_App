@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse  # To generate URLS by reversing URL patterns
 # from login import models
-
+from .views import editRide
 
 class Ride(models.Model):
     status = (
@@ -25,7 +25,7 @@ class Ride(models.Model):
          """
          Returns the url to access a particular instance of Ride.
          """
-         return reverse('model-detail-view', args=[str(self.id)])
+         return reverse('editRide', kwargs={'ride_id':self.ride_id})
 
 class Share(models.Model):
     ride = models.ForeignKey('Ride', on_delete=models.CASCADE)
