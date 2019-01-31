@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.template import loader
 from . import models
 from . import forms
+from ride import forms as ride_form
 
 # Create your views here.
 
@@ -94,6 +95,10 @@ def profile(request):
                 return render(request, 'login/profile.html', locals())
             else:
                 return render(request, 'login/registerDriver.html', locals())
+        elif 'reqRide' in request.POST:
+            req_form = ride_form.reqForm()
+            return render(request, 'ride/requestRide.html', locals())
+
     else:
         return render(request, 'login/profile.html', locals())
 
