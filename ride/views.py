@@ -7,3 +7,21 @@ from . import forms
 
 # Create your views here.
 
+
+def reqRide():
+    return
+
+
+def editRide():
+    return
+
+def viewRide():
+    return
+
+
+def searchRideAsDriver():
+    return
+
+
+def searchRideAsSharer():
+    return

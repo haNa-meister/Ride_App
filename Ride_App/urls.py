@@ -16,15 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
-from login import views
+from login import views as login_views
+from ride import views as ride_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^index/', views.index),
-    url(r'^login/', views.login),
-    url(r'^register/', views.register),
-    url(r'^logout/', views.logout),
-    url(r'^profile/', views.profile),
-    url(r'^registerDriver/', views.registerDriver),
-    url(r'^editProfile/', views.editProfile),
+    url(r'^index/', login_views.index),
+    url(r'^login/', login_views.login),
+    url(r'^register/', login_views.register),
+    url(r'^logout/', login_views.logout),
+    url(r'^profile/', login_views.profile),
+    url(r'^registerDriver/', login_views.registerDriver),
+    url(r'^editProfile/', login_views.editProfile),
+    url(r'^reqRide/', ride_views.reqRide),
+    url(r'^editRide/', ride_views.editRide),
+    url(r'^viewRide/', ride_views.viewRide),
+    url(r'^searchRideAsDriver/', ride_views.searchRideAsDriver),
+    url(r'^searchRideAsSharer/', ride_views.searchRideAsSharer),
 ]
