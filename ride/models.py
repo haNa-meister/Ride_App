@@ -16,7 +16,7 @@ class Ride(models.Model):
     arrive_time = models.DateTimeField(auto_now=True)
     passenger = models.PositiveIntegerField()
     vehicle_type = models.CharField(max_length=128, unique=False, blank=True)
-    if_shared = models.BooleanField()
+    if_shared = models.BooleanField(default=False)
     special_info = models.CharField(max_length=256, unique=False)
     status = models.CharField(max_length=32, choices=status, default='open')
     driver_name = models.CharField(max_length=128, unique=False, blank=True)
@@ -25,7 +25,7 @@ class Ride(models.Model):
          """
          Returns the url to access a particular instance of Ride.
          """
-         return reverse('editRide', kwargs={'ride_id':self.ride_id})
+         return reverse('viewDetail', kwargs={'ride_id': self.ride_id})
 
 class Share(models.Model):
     ride = models.ForeignKey('Ride', on_delete=models.CASCADE)

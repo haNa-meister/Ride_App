@@ -5,6 +5,7 @@ from django.template import loader
 from login import models as login_model
 from . import models
 from . import forms
+from django.urls import reverse
 
 # Create your views here.
 
@@ -37,37 +38,50 @@ def reqRide(request):
             new_ride.owner_name = user
             new_ride.save()
             return render(request, 'login/profile.html', locals())
-        return
+        return render(request, 'ride/requestRide.html', locals())
 
     req_form = forms.reqForm()
     return render(request, 'ride/requestRide.html', locals())
 
 
 def editRide(request, ride_id):
-    print(ride_id)
-    # message = ''
-    # user = models.User.objects.get(name=request.session.get('user_name'))
-    # if request.method == 'POST':
-    #     editProfile_form = forms.EditProfileForm(request.POST)
-    #     if editProfile_form.is_valid():
-    #         email = editProfile_form.cleaned_data['email']
-    #         sex = editProfile_form.cleaned_data['sex']
-    #         vechicleMake = editProfile_form.cleaned_data['vehicleMake']
-    #         vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
-    #         if user.driver:
-    #             user.vechicleMake = editProfile_form.cleaned_data['vehicleMake']
-    #             user.vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
-    #         elif vechiclePlate or vechicleMake:
-    #             message = 'You are not a driver yet'
-    #             return render(request, 'login/editProfile.html', locals())
-    #
-    #         if email:
-    #             user.email = editProfile_form.cleaned_data['email']
-    #         user.save()
-    #         return render(request, 'login/profile.html', locals())
+    message = ''
+    user = login_model.User.objects.get(name=request.session.get('user_name'))
+    ride = models.Ride.objects.get(ride_id=ride_id)
+    if request.method == 'POST':
+        editRide_form = forms.editRideForm(request.POST)
+        if editRide_form.is_valid():
+            destination = editRide_form.cleaned_data['destination_add']
+            arrive = editRide_form.cleaned_data['arrive_time']
+            passenger = editRide_form.cleaned_data['passenger']
+            special_info = editRide_form.cleaned_data['special_info']
+            if_shared = editRide_form.cleaned_data['if_shared']
+            vehicle_type = editRide_form.cleaned_data['vehicle_type']
 
-    editProfile_form = forms.EditProfileForm()
-    return render(request, 'login/editProfile.html', locals())
+            if passenger:
+                if passenger <= 0:
+                    message = 'passenger should be positive'
+                    return render(request, 'ride/editRide.html', locals())
+                ride.passenger = passenger
+
+            if destination:
+                ride.destination_add = destination
+            if arrive:
+                ride.arrive_time = arrive
+            if special_info:
+                ride.special_info = special_info
+            if if_shared:
+                ride.if_shared = if_shared
+            if vehicle_type:
+                ride.vehicle_type = vehicle_type
+
+            ride.save()
+            return redirect(reverse('viewDetail', kwargs={'ride_id': ride.ride_id}))
+        return render(request, 'ride/editRide.html', locals())
+
+    editRide_form = forms.editRideForm
+    return render(request, 'ride/editRide.html', locals())
+
 
 def viewRide(request):
     user = login_model.User.objects.get(name=request.session.get('user_name'))
@@ -79,7 +93,6 @@ def viewRide(request):
         dic['owner_name'] = re.owner_name.name
         dic['get_absolute_url'] = re.get_absolute_url()
         pass_in.append(dic)
-        print(re.ride_id)
     share_request = models.Share.objects.filter(sharer_name=user.name)
 
     for sh in share_request:
@@ -88,9 +101,28 @@ def viewRide(request):
         dic['ride_id'] = re.ride_id
         dic['owner_name'] = re.owner_name.name
         pass_in.append(dic)
-        print(re.ride_id)
 
-    return render(request, 'ride/viewRides.html', {'reqest_list':pass_in})
+    return render(request, 'ride/viewRides.html', {'request_list': pass_in})
+
+
+def viewDetail(request, ride_id):
+    ride = models.Ride.objects.get(ride_id=ride_id)
+    user = login_model.User.objects.get(name=request.session.get('user_name'))
+    message = ''
+    if request.method == 'POST':
+        if 'Back' in request.POST:
+            return redirect('/viewRide/')
+        elif 'Edit' in request.POST:
+            return redirect(reverse('editRide', kwargs={'ride_id': ride.ride_id}))
+        elif 'Delete' in request.POST:
+            if ride.owner_name.name != user.name:
+                message = 'You are not the owner of this ride!!!'
+                return render(request, 'ride/viewDetail.html', locals())
+            else:
+                ride.delete()
+                return  redirect('/viewRide/')
+
+    return render(request, 'ride/viewDetail.html', locals())
 
 
 def searchRideAsDriver():
