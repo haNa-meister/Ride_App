@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^reqRide/', ride_views.reqRide),
     path('editRide/<int:ride_id>/', ride_views.editRide, name='editRide'),
     path('viewDetail/<int:ride_id>/', ride_views.viewDetail, name='viewDetail'),
+    path('confirmRide/<int:ride_id>/', ride_views.confirmRide, name='confirmRide'),
     url(r'^viewRide/', ride_views.viewRide),
     url(r'^searchRideAsDriver/', ride_views.searchRideAsDriver),
     url(r'^searchRideAsSharer/', ride_views.searchRideAsSharer),

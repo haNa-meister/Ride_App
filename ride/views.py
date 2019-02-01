@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.template import loader
 from login import models as login_model
@@ -125,8 +126,35 @@ def viewDetail(request, ride_id):
     return render(request, 'ride/viewDetail.html', locals())
 
 
-def searchRideAsDriver():
-    return
+def searchRideAsDriver(request):
+    user = login_model.User.objects.get(name=request.session.get('user_name'))
+    if not user.driver:
+        raise PermissionDenied("Your are not a driver")
+    print(user.driver)
+    available_rides = models.Ride.objects.filter(driver_name='')
+    pass_in = []
+    for re in available_rides:
+        dic = {}
+        dic['ride_id'] = re.ride_id
+        dic['owner_name'] = re.owner_name.name
+        dic['get_absolute_url'] = re.confirm_url()
+        pass_in.append(dic)
+
+    return render(request, 'ride/viewRides.html', {'request_list': pass_in})
+
+def confirmRide(request, ride_id):
+    user = login_model.User.objects.get(name=request.session.get('user_name'))
+    ride = models.Ride.objects.get(ride_id=ride_id)
+    message = ''
+    if request.method == 'POST':
+        if 'Back' in request.POST:
+            return redirect('/profile/')
+        elif 'Confirm' in request.POST:
+            ride.driver_name = user.name
+            ride.save()
+            return redirect('/profile/')
+
+    return render(request, 'ride/confirmRide.html', locals())
 
 
 def searchRideAsSharer():

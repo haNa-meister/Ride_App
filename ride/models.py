@@ -27,6 +27,13 @@ class Ride(models.Model):
          """
          return reverse('viewDetail', kwargs={'ride_id': self.ride_id})
 
+    def confirm_url(self):
+        '''  for driver to confirm
+        :return:
+        '''
+        return reverse('confirmRide', kwargs={'ride_id': self.ride_id})
+
+
 class Share(models.Model):
     ride = models.ForeignKey('Ride', on_delete=models.CASCADE)
     sharer_name = models.CharField(max_length=128, unique=False)
