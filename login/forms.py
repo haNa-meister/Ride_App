@@ -43,6 +43,7 @@ class EditProfileForm(forms.Form):
                                           widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
 class RegisterDriverForm(forms.Form):
+
     vehicleMake = forms.CharField(label='vehicle make', max_length=128,
                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
     vehiclePlate = forms.CharField(label='vehicle plate', max_length=128,

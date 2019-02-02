@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.template import loader
+from django.utils.timezone import now
 from . import models
 from . import forms
 from ride import forms as ride_form
@@ -97,11 +98,15 @@ def profile(request):
             else:
                 return render(request, 'login/registerDriver.html', locals())
         elif 'reqRide' in request.POST:
-            req_form = ride_form.reqForm()
+            req_form = ride_form.reqForm(initial={'arrive_time': str(now())})
             return render(request, 'ride/requestRide.html', locals())
+        elif 'reqShare' in  request.POST:
+            req_form = ride_form.reqShareForm(initial={'early_arrive_time': str(now())})
+            return render(request, 'ride/requestShare.html', locals())
         elif 'viewRide' in request.POST:
             return redirect('/viewRide/')
-
+        elif 'searchRideAsDriver' in request.POST:
+            return redirect('/searchRide/driver/')
     else:
         return render(request, 'login/profile.html', locals())
 

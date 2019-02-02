@@ -25,7 +25,7 @@ def fake_rides():
             dic['driver'] = True
         else:
             dic['driver'] = False
-        u = User.objects.create(**dic)
+        u = Ride.objects.create(**dic)
 
 
 class Command(BaseCommand):

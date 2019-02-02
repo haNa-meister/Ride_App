@@ -29,10 +29,11 @@ urlpatterns = [
     url(r'^registerDriver/', login_views.registerDriver),
     url(r'^editProfile/', login_views.editProfile),
     url(r'^reqRide/', ride_views.reqRide),
+    url(r'^reqShare/', ride_views.request_share_ride),
     path('editRide/<int:ride_id>/', ride_views.editRide, name='editRide'),
     path('viewDetail/<int:ride_id>/', ride_views.viewDetail, name='viewDetail'),
     path('confirmRide/<int:ride_id>/', ride_views.confirmRide, name='confirmRide'),
+    path('completeRide/<int:ride_id>/', ride_views.completeRide, name='completeRide'),
     url(r'^viewRide/', ride_views.viewRide),
-    url(r'^searchRideAsDriver/', ride_views.searchRideAsDriver),
-    url(r'^searchRideAsSharer/', ride_views.searchRideAsSharer),
+    path('searchRide/<str:aswho>/', ride_views.searchRide),
 ]

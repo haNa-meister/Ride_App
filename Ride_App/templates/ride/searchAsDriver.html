@@ -6,31 +6,10 @@
 
 
 {% block content %}
-    <h1>Current requests list </h1>
+    <h1>Current open requests </h1>
     {% if request_list %}
     <ul>
       {% for req in request_list %}
-      <li>
-          <div class="form-group">
-            <p>
-            <a href="{{ req.get_absolute_url }}"> click ride ID: {{ req.ride_id }}</a> | owner_name: {{ req.owner_name}}
-              | vehicle_type: {{ req.vehicle_type }}| status: {{ req.stuatus }} | passenger Num: {{ req.passenger_number}}
-              | sharer Num: {{ req.sharer_number }} | destination: {{ req.destination }}
-              | arrive time: {{ req.arrive_time }} <br />
-                special info: {{ req.special_info }}
-            </p>
-          </div>
-      </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-      <p>There are no request.</p>
-    {% endif %}
-
-    <h1>Your current driver rides</h1>
-    {% if driver_list %}
-    <ul>
-      {% for req in driver_list %}
       <li>
           <div class="form-group">
             <p>
