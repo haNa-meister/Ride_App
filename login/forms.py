@@ -1,5 +1,5 @@
 from django import forms
-
+from django.core.validators import MinValueValidator
 
 class UserForm(forms.Form):
     username = forms.CharField(label='username', max_length=128,
@@ -38,8 +38,15 @@ class EditProfileForm(forms.Form):
     vehiclePlate = forms.CharField(label='vehicle plate', max_length=128, required=False,
                           widget=forms.TextInput(attrs={'class': 'form-control'}))
 
+    vechicleCapacity = forms.IntegerField(label='vehicle capacity', initial=2,
+                                          validators=[MinValueValidator(2)],
+                                          widget=forms.NumberInput(attrs={'class': 'form-control'}))
+
 class RegisterDriverForm(forms.Form):
     vehicleMake = forms.CharField(label='vehicle make', max_length=128,
                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
     vehiclePlate = forms.CharField(label='vehicle plate', max_length=128,
                                    widget=forms.TextInput(attrs={'class': 'form-control'}))
+    vehicleCapacity = forms.IntegerField(label='vehicle capacity', initial= 2,
+                                         min_value=2,
+                                        widget=forms.NumberInput(attrs={'class': 'form-control'}))

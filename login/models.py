@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 # Create your models here.
 
 
@@ -15,4 +16,6 @@ class User(models.Model):
     sex = models.CharField(max_length=32, choices=gender)
     vechicleMake = models.CharField(max_length=128, unique=False, default='')
     vechiclePlate = models.CharField(max_length=128, unique=False, default='')
+    vechicle_capacity = models.IntegerField(null=True, validators=[MinValueValidator(2)])
     driver = models.BooleanField(default=False)
+

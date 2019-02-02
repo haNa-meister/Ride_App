@@ -116,8 +116,10 @@ def registerDriver(request):
         if reg_form.is_valid():
             vehicleMake = reg_form.cleaned_data['vehicleMake']
             vehiclePlate = reg_form.cleaned_data['vehiclePlate']
+            vechicleCapacity = reg_form.cleaned_data['vehicleCapacity']
             user.vechicleMake = vehicleMake
             user.vechiclePlate = vehiclePlate
+            user.vechicle_capacity = vechicleCapacity
             user.driver = True
             user.save()
             return render(request, 'login/profile.html', locals())
