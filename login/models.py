@@ -14,8 +14,8 @@ class User(models.Model):
     password = models.CharField(max_length=128, unique=False)
     email = models.EmailField(unique=False)
     sex = models.CharField(max_length=32, choices=gender)
-    vechicleMake = models.CharField(max_length=128, unique=False, default='')
-    vechiclePlate = models.CharField(max_length=128, unique=False, default='')
-    vechicle_capacity = models.PositiveIntegerField(default=0, validators=[MinValueValidator(2)])
+    vehicleMake = models.CharField(max_length=128, unique=False, default='')
+    vehiclePlate = models.CharField(max_length=128, unique=False, default='')
+    vehicleCapacity = models.PositiveIntegerField(default=0, validators=[MinValueValidator(2)])
     driver = models.BooleanField(default=False)
 

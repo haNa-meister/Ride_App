@@ -121,10 +121,10 @@ def registerDriver(request):
         if reg_form.is_valid():
             vehicleMake = reg_form.cleaned_data['vehicleMake']
             vehiclePlate = reg_form.cleaned_data['vehiclePlate']
-            vechicleCapacity = reg_form.cleaned_data['vehicleCapacity']
-            user.vechicleMake = vehicleMake
-            user.vechiclePlate = vehiclePlate
-            user.vechicle_capacity = vechicleCapacity
+            vehicleCapacity = reg_form.cleaned_data['vehicleCapacity']
+            user.vehicleMake = vehicleMake
+            user.vehiclePlate = vehiclePlate
+            user.vehicle_capacity = vehicleCapacity
             user.driver = True
             user.save()
             return render(request, 'login/profile.html', locals())
@@ -141,12 +141,17 @@ def editProfile(request):
         if editProfile_form.is_valid():
             email = editProfile_form.cleaned_data['email']
             sex = editProfile_form.cleaned_data['sex']
-            vechicleMake = editProfile_form.cleaned_data['vehicleMake']
-            vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+            vehicleMake = editProfile_form.cleaned_data['vehicleMake']
+            vehiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+            vehicleCapacity = editProfile_form.cleaned_data['vehicleCapacity']
             if user.driver:
-                user.vechicleMake = editProfile_form.cleaned_data['vehicleMake']
-                user.vechiclePlate = editProfile_form.cleaned_data['vehiclePlate']
-            elif vechiclePlate or vechicleMake:
+                if vehicleMake:
+                    user.vehicleMake = editProfile_form.cleaned_data['vehicleMake']
+                if vehiclePlate:
+                    user.vehiclePlate = editProfile_form.cleaned_data['vehiclePlate']
+                if vehicleCapacity:
+                    user.vehicleCapacity = editProfile_form.cleaned_data['vehicleCapacity']
+            elif vehiclePlate or vehicleMake or vehicleCapacity:
                 message = 'You are not a driver yet'
                 return render(request, 'login/editProfile.html', locals())
 
@@ -155,5 +160,6 @@ def editProfile(request):
             user.save()
             return render(request, 'login/profile.html', locals())
 
+    print('not vaild')
     editProfile_form = forms.EditProfileForm()
     return render(request, 'login/editProfile.html', locals())

@@ -182,22 +182,24 @@ def viewDetail(request, ride_id):
 
 
 def searchRide(request, aswho):
-    print(aswho)
+    print(aswho=='driver')
     user = login_model.User.objects.get(name=request.session.get('user_name'))
     if aswho=='driver' and not user.driver:
         raise PermissionDenied("Your are not a driver")
-    print('{} {} with car type {} is searching.'.format(aswho, user.name, user.vechiclePlate))
+    print('{} {} with car type {} is searching.'.format(aswho, user.name, user.vehiclePlate))
 
     available_rides = []
     if aswho=='driver':
         available_rides = models.Ride.objects.filter(status='open',
-                                                     vehicle_type=user.vechiclePlate,
-                                                     passenger__lt=user.vechicle_capacity)
+                                                     vehicle_type=user.vehicleMake,
+                                                     passenger__lt=user.vehicleCapacity)
     elif aswho == 'sharer':
         available_rides = models.Ride.objects.filter(status='open')
-                                                     # vehicle_type=user.vechiclePlate,
-                                                     # passenger__lt=user.vechicle_capacity)
+                                                     # vehicle_type=user.vehiclePlate,
+                                                     # passenger__lt=user.vehicle_capacity)
     pass_in = []
+    print(available_rides)
+    # available_rides = models.Ride.objects.filter(status='open')
     for re in available_rides:
         dic = get_ride_dic(re, aswho)
         pass_in.append(dic)
@@ -211,16 +213,16 @@ def confirmRide(request, ride_id):
     message = ''
     if request.method == 'POST':
         if 'Back' in request.POST:
-            return redirect('/searchRideAsDriver/')
+            return redirect('/searchRide/driver/')
         elif 'Confirm' in request.POST:
             ride.driver_name = user
             ride.status = 'confirmed'
-            ride.empty_seats = user.vechicle_capacity - ride.passenger
+            ride.empty_seats = user.vehicleCapacity - ride.passenger
             ride.save()
-            return redirect('/searchRideAsDriver/')
+            return redirect('/searchRide/driver/')
         elif 'Complete' in request.POST:
             ride.status = 'completed'
-            return redirect('/searchRideAsDriver/')
+            return redirect('/searchRide/driver/')
 
     return render(request, 'ride/confirmRide.html', locals())
 

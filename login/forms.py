@@ -38,7 +38,7 @@ class EditProfileForm(forms.Form):
     vehiclePlate = forms.CharField(label='vehicle plate', max_length=128, required=False,
                           widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    vechicleCapacity = forms.IntegerField(label='vehicle capacity', initial=2,
+    vehicleCapacity = forms.IntegerField(label='vehicle capacity', initial=2, required=False,
                                           validators=[MinValueValidator(2)],
                                           widget=forms.NumberInput(attrs={'class': 'form-control'}))
 

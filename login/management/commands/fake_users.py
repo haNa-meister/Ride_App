@@ -17,8 +17,8 @@ def fake_users():
 
         if i < 10:
             dic['driver'] = True
-            dic['vechicleMake'] = 'vM_{}'.format(i)
-            dic['vechicle_capacity'] = random.randint(2,20)
+            dic['vehicleMake'] = 'vM_{}'.format(i)
+            dic['vehicle_capacity'] = random.randint(2,20)
         else:
             dic['driver'] = False
         u = User.objects.create(**dic)

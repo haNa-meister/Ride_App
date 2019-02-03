@@ -4,11 +4,12 @@ import datetime
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 
-from ride.models import Ride
+from ride.models import Ride, Share
 from login.models import User
 
 def fake_rides():
     Ride.objects.all().delete()
+    Share.objects.all().delete()
     user_list = User.objects.all()
 
     for i in range(0, 30):
@@ -19,7 +20,7 @@ def fake_rides():
         dic['password'] = '1'
         dic['email'] = 'fake@nonexist.com'
         dic['sex'] = 'm'
-        dic['vechicleMake'] = 'vM_{}'.format(i)
+        dic['vehicleMake'] = 'vM_{}'.format(i)
 
         if i < 10:
             dic['driver'] = True
