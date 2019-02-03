@@ -6,7 +6,11 @@
 
 
 {% block content %}
-    <h1>Current open requests </h1>
+    {% if aswho != "driver" %}
+        <h1>matched open rides</h1>
+    {% else %}
+        <h1>Current open requests </h1>
+    {% endif %}
     {% if request_list %}
     <ul>
       {% for req in request_list %}

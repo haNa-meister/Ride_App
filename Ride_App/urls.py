@@ -35,5 +35,7 @@ urlpatterns = [
     path('confirmRide/<int:ride_id>/', ride_views.confirmRide, name='confirmRide'),
     path('completeRide/<int:ride_id>/', ride_views.completeRide, name='completeRide'),
     url(r'^viewRide/', ride_views.viewRide),
-    path('searchRide/<str:aswho>/', ride_views.searchRide),
+    path('searchRide/<str:aswho>/', ride_views.searchRide, name='searchRide'),
+    path('searchRide/<str:aswho>/<int:share_id>', ride_views.searchRide, name='searchRideforShare'),
+    path('joinRide/<int:ride_id>/<int:share_id>/', ride_views.joinRide, name='joinRide'),
 ]

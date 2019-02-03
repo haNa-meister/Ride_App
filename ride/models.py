@@ -24,11 +24,10 @@ class Ride(models.Model):
     passenger = models.PositiveIntegerField()
     vehicle_type = models.CharField(max_length=128, unique=False, blank=True)
     if_shared = models.BooleanField(default=False)
-    special_info = models.CharField(max_length=256, unique=False)
+    special_info = models.CharField(max_length=256, unique=False, blank=True)
     status = models.CharField(max_length=32, choices=status, default='open')
     # driver_name = models.CharField(max_length=128, unique=False, blank=True)
-    sharer_number = models.PositiveIntegerField(default=0)
-    empty_seats = models.PositiveIntegerField(default=0)
+    total_number = models.PositiveIntegerField(default=0)
 
     def get_absolute_url(self):
          """
@@ -47,8 +46,9 @@ class Ride(models.Model):
         :return:
         '''
         return reverse('completeRide', kwargs={'ride_id': self.ride_id})
-    # def sharer_join_url(self):
-    #     return reverse('sharerjoinRide', kwargs={'ride_id': self.ride_id})
+
+    def join_url(self, share_id):
+        return reverse('joinRide', kwargs={'ride_id': self.ride_id, 'share_id': share_id})
 
 
 class Share(models.Model):
@@ -57,7 +57,8 @@ class Share(models.Model):
     sharer_name = models.ForeignKey('login.User', on_delete=models.CASCADE,
                                    related_name='user_of_sharer')
     destination_add = models.CharField(max_length=128, default='non', unique=False)
-    early_arrive_time = models.DateTimeField(auto_now=True)
-    late_arrive_time = models.DateTimeField(auto_now=True)
-    passenger = models.PositiveIntegerField(default=0)
+    early_arrive_time = models.DateTimeField(auto_now=False)
+    late_arrive_time = models.DateTimeField(auto_now=False)
+    passenger = models.PositiveIntegerField(default=1)
+    vehicle_type = models.CharField(max_length=128, unique=False, blank=True)
 
