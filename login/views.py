@@ -72,8 +72,8 @@ def register(request):
                 new_user.email = email
                 new_user.sex = sex
                 new_user.save()
-                redirect('/profile/')
-                return render(request, 'login/profile.html', locals())
+                return redirect('/login/')
+
 
     register_form = forms.RegisterForm()
     return render(request, 'login/register.html', locals())

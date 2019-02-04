@@ -17,8 +17,8 @@ class Ride(models.Model):
                                    )
     driver_name = models.ForeignKey('login.User', on_delete=models.SET_NULL,
                                     null=True, blank=True,
-                                   related_name='driver_of_ride'
-                                   )
+                                    related_name='driver_of_ride'
+                                    )
     destination_add = models.CharField(max_length=128, unique=False)
     arrive_time = models.DateTimeField(auto_now=False)
     passenger = models.PositiveIntegerField()

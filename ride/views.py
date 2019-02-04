@@ -7,7 +7,9 @@ from login import models as login_model
 from . import models
 from . import forms
 from django.urls import reverse
+from django.conf import settings
 # Create your views here.
+
 
 def get_rides_share(ride):
     share_info = []
@@ -16,6 +18,7 @@ def get_rides_share(ride):
         info = {'sharer': sh.sharer_name.name, 'party_number': sh.passenger}
         share_info.append(info)
     return share_info
+
 
 def get_ride_dic(re, aswho = 'owner', action = None, share_id=None):
     dic = {}
@@ -78,6 +81,7 @@ def reqRide(request):
 
     req_form = forms.reqForm()
     return render(request, 'ride/requestRide.html', locals())
+
 
 def request_share_ride(request):
     message = ''
@@ -220,12 +224,12 @@ def viewDetail(request, ride_id):
 def searchRide(request, aswho, share_id=None):
 
     available_rides = []
-    if aswho=='driver':
+    if aswho == 'driver':
         user = login_model.User.objects.get(name=request.session.get('user_name'))
         if aswho == 'driver' and not user.driver:
             raise PermissionDenied("Your are not a driver")
-        available_rides = models.Ride.objects.filter(status='open', total_number__lt=user.vehicleCapacity
-                                                    ,vehicle_type=user.vehiclePlate)
+        available_rides = models.Ride.objects.filter(status='open', total_number__lt=user.vehicleCapacity,
+                                                     vehicle_type=user.vehicleMake)
 
     elif aswho == 'share':
         share_request = models.Share.objects.get(share_id=share_id)
@@ -247,6 +251,7 @@ def searchRide(request, aswho, share_id=None):
 
     return render(request, 'ride/searchAsDriver.html', {'request_list': pass_in, 'aswho':str(aswho)})
 
+
 def confirmRide(request, ride_id):
     user = login_model.User.objects.get(name=request.session.get('user_name'))
     ride = models.Ride.objects.get(ride_id=ride_id)
@@ -259,12 +264,23 @@ def confirmRide(request, ride_id):
             ride.status = 'confirmed'
             ride.empty_seats = user.vehicleCapacity - ride.passenger
             ride.save()
+            shareList = models.Share.objects.filter(ride=ride)
+            userList = []
+            owner = ride.owner_name
+            userList.append(owner)
+            for share in shareList:
+                userList.append(share.sharer_name)
+
+            for user in userList:
+                sendConfirmEmail(user.email, ride.ride_id, ride.driver_name, user.name)
+
             return redirect('/searchRide/driver/')
         elif 'Complete' in request.POST:
             ride.status = 'completed'
             return redirect('/searchRide/driver/')
 
     return render(request, 'ride/confirmRide.html', locals())
+
 
 def completeRide(request, ride_id):
     user = login_model.User.objects.get(name=request.session.get('user_name'))
@@ -306,3 +322,15 @@ def joinRide(request, ride_id, share_id):
 
     return render(request, 'ride/joinRide.html', locals())
 
+
+def sendConfirmEmail(email, rideId, driver, username):
+    from django.core.mail import EmailMultiAlternatives
+    subject = 'Confirm Email from Ride Sharing Web APP'
+    content = 'Dear User {}:' \
+              ' Your Ride with ride ID : {}' \
+              ' It has been confirmed by Driver: {}' \
+              ' Thanks for your support'.format(username, rideId, driver)
+
+    msg = EmailMultiAlternatives(subject, content, settings.EMAIL_HOST_USER, [email])
+    msg.send()
+    pass
