@@ -326,10 +326,10 @@ def joinRide(request, ride_id, share_id):
 def sendConfirmEmail(email, rideId, driver, username):
     from django.core.mail import EmailMultiAlternatives
     subject = 'Confirm Email from Ride Sharing Web APP'
-    content = 'Dear User {}:' \
+    content = 'Dear User {}:\n' \
               ' Your Ride with ride ID : {}' \
-              ' It has been confirmed by Driver: {}' \
-              ' Thanks for your support'.format(username, rideId, driver)
+              ' has been confirmed by Driver: {}!\n' \
+              ' Thanks for your support!'.format(username, rideId, driver)
 
     msg = EmailMultiAlternatives(subject, content, settings.EMAIL_HOST_USER, [email])
     msg.send()
