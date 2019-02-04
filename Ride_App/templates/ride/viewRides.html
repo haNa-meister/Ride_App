@@ -17,7 +17,14 @@
               | vehicle_type: {{ req.vehicle_type }}| status: {{ req.stuatus }} | passenger Num: {{ req.passenger_number}}
               | sharer Num: {{ req.sharer_number }} | destination: {{ req.destination }}
               | arrive time: {{ req.arrive_time }} <br />
-                special info: {{ req.special_info }}
+                special info: {{ req.special_info }} <br />
+                {% if req.share_list %}
+                    {% for sh in req.share_list %}
+                        share name : {{ sh.sharer }} | party num: {{ sh.party_number }} <br />
+                    {% endfor %}
+                {% else %}
+                    this ride has no share
+                {% endif %}
             </p>
           </div>
       </li>
@@ -39,6 +46,7 @@
               | sharer Num: {{ req.sharer_number }} | destination: {{ req.destination }}
               | arrive time: {{ req.arrive_time }} <br />
                 special info: {{ req.special_info }}
+
             </p>
           </div>
       </li>

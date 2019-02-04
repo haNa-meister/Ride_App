@@ -26,13 +26,25 @@
             <p>Special Info: {{ride.special_info}}</p>
             <p>Vehicle Type: {{ride.vehicle_type}}</p>
             <p>Status: {{ride.status}}</p>
-
+            <p>Total passenger number: {{ride.total_number}}</p>
+              {% if share_list %}
+                    {% for sh in share_list %}
+                        share name : {{ sh.sharer }} | party num: {{ sh.party_number }} <br />
+                    {% endfor %}
+                {% else %}
+                    this ride has no share
+                {% endif %}
+            <br />
             <button type="submit" class="btn btn-default" name="Back">Back</button>
-            <td width="30px">&nbsp;</td>
-            <button type="submit" class="btn btn-danger " name="Delete">Delete</button>
-            <td width="30px">&nbsp;</td>
-            <button type="submit" class="btn btn-primary " name="Edit">Edit Ride</button>
-
+            {% if aswho == owner %}
+                <td width="30px">&nbsp;</td>
+                <button type="submit" class="btn btn-danger " name="Delete"> Delete </button>
+                <td width="30px">&nbsp;</td>
+                <button type="submit" class="btn btn-primary " name="Edit"> Edit Ride </button>
+            {% else %}
+                <td width="30px">&nbsp;</td>
+                <button type="submit" class="btn btn-danger " name="Leave"> Leave </button>
+            {% endif %}
           </form>
         </div>
     </div> <!-- /container -->

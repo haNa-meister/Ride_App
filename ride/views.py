@@ -7,8 +7,15 @@ from login import models as login_model
 from . import models
 from . import forms
 from django.urls import reverse
-from django.utils.timezone import now
 # Create your views here.
+
+def get_rides_share(ride):
+    share_info = []
+    share_list = models.Share.objects.filter(ride=ride).order_by('early_arrive_time')
+    for sh in share_list:
+        info = {'sharer': sh.sharer_name.name, 'party_number': sh.passenger}
+        share_info.append(info)
+    return share_info
 
 def get_ride_dic(re, aswho = 'owner', action = None, share_id=None):
     dic = {}
@@ -19,7 +26,7 @@ def get_ride_dic(re, aswho = 'owner', action = None, share_id=None):
     dic['destination'] = re.destination_add
     dic['arrive_time'] = re.arrive_time
     dic['passenger_number'] = re.passenger
-    if aswho == 'owner':
+    if aswho == 'owner' or action == 'view':
         dic['get_absolute_url'] = re.get_absolute_url()
     elif aswho == 'driver':
         if action and action == 'complete':
@@ -30,6 +37,9 @@ def get_ride_dic(re, aswho = 'owner', action = None, share_id=None):
         dic['get_absolute_url'] = re.join_url(share_id)
 
     dic['special_info'] = re.special_info
+
+    dic['share_list'] = get_rides_share(re)
+
     return dic
 
 
@@ -154,11 +164,18 @@ def editRide(request, ride_id):
 def viewRide(request):
     user = login_model.User.objects.get(name=request.session.get('user_name'))
     owner_requests = models.Ride.objects.filter(owner_name=user, status='open').order_by('ride_id')
+    share_requests = models.Share.objects.filter(sharer_name=user).order_by('ride_id')
+
     pass_in = []
     # print(owner_requests[0].status)
     for re in owner_requests:
         dic = get_ride_dic(re)
         pass_in.append(dic)
+
+    for sh in share_requests:
+        if sh.ride and sh.ride.status == 'open':
+            dic = get_ride_dic(sh.ride, action='view')
+            pass_in.append(dic)
 
     driver_rides = models.Ride.objects.filter(driver_name=user, status='confirmed').order_by('ride_id')
     driver_list = []
@@ -172,9 +189,20 @@ def viewRide(request):
 def viewDetail(request, ride_id):
     ride = models.Ride.objects.get(ride_id=ride_id)
     user = login_model.User.objects.get(name=request.session.get('user_name'))
+    if ride.owner_name == user:
+        aswho = 'owner'
+    else:
+        aswho = 'share'
+
     message = ''
     if request.method == 'POST':
         if 'Back' in request.POST:
+            return redirect('/viewRide/')
+        elif 'Leave' in request.POST:
+            share = models.Share.objects.get(ride_id=ride_id)
+            ride.total_number -= share.passenger
+            ride.save()
+            share.delete()
             return redirect('/viewRide/')
         elif 'Edit' in request.POST:
             return redirect(reverse('editRide', kwargs={'ride_id': ride.ride_id}))
@@ -185,7 +213,7 @@ def viewDetail(request, ride_id):
             else:
                 ride.delete()
                 return  redirect('/viewRide/')
-
+    share_list = get_rides_share(ride)
     return render(request, 'ride/viewDetail.html', locals())
 
 
@@ -196,14 +224,19 @@ def searchRide(request, aswho, share_id=None):
         user = login_model.User.objects.get(name=request.session.get('user_name'))
         if aswho == 'driver' and not user.driver:
             raise PermissionDenied("Your are not a driver")
-        available_rides = models.Ride.objects.filter(status='open',
-                                                     vehicle_type=user.vehiclePlate,
-                                                     passenger__lt=user.vehicleCapacity)
+        available_rides = models.Ride.objects.filter(status='open', total_number__lt=user.vehicleCapacity
+                                                    ,vehicle_type=user.vehiclePlate)
+
     elif aswho == 'share':
         share_request = models.Share.objects.get(share_id=share_id)
+        st = share_request.early_arrive_time
+        et = share_request.late_arrive_time
         available_rides = models.Ride.objects.filter(status='open',
+                                                     arrive_time__gte=st,
+                                                     arrive_time__lte=et,
                                                      vehicle_type=share_request.vehicle_type).exclude(owner_name=share_request.sharer_name)
     pass_in = []
+    print(len(available_rides))
     for re in available_rides:
         dic = {}
         if aswho == 'share':
@@ -248,6 +281,7 @@ def completeRide(request, ride_id):
             ride.save()
             return redirect('/viewRide/')
 
+    share_list = get_rides_share(ride)
     return render(request, 'ride/completeRide.html', locals())
 
 
@@ -271,3 +305,4 @@ def joinRide(request, ride_id, share_id):
             return redirect('/profile/')
 
     return render(request, 'ride/joinRide.html', locals())
+

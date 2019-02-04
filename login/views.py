@@ -6,6 +6,9 @@ from django.utils.timezone import now
 from . import models
 from . import forms
 from ride import forms as ride_form
+def get_time_now():
+    t = str(now())
+    return t[:16]
 
 # Create your views here.
 
@@ -98,10 +101,10 @@ def profile(request):
             else:
                 return render(request, 'login/registerDriver.html', locals())
         elif 'reqRide' in request.POST:
-            req_form = ride_form.reqForm(initial={'arrive_time': str(now())})
+            req_form = ride_form.reqForm(initial={'arrive_time':  get_time_now()})
             return render(request, 'ride/requestRide.html', locals())
         elif 'reqShare' in  request.POST:
-            req_form = ride_form.reqShareForm(initial={'early_arrive_time': str(now())})
+            req_form = ride_form.reqShareForm(initial={'early_arrive_time': get_time_now()})
             return render(request, 'ride/requestShare.html', locals())
         elif 'viewRide' in request.POST:
             return redirect('/viewRide/')
