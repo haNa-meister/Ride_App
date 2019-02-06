@@ -184,7 +184,7 @@ def viewRide(request):
     driver_rides = models.Ride.objects.filter(driver_name=user, status='confirmed').order_by('ride_id')
     driver_list = []
     for re in driver_rides:
-        dic = get_ride_dic(re, aswho='driver', action ='complete')
+        dic = get_ride_dic(re, aswho='driver', action='complete')
         driver_list.append(dic)
 
     return render(request, 'ride/viewRides.html', {'request_list': pass_in, 'driver_list': driver_list})

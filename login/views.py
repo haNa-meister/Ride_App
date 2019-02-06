@@ -6,6 +6,8 @@ from django.utils.timezone import now
 from . import models
 from . import forms
 from ride import forms as ride_form
+
+
 def get_time_now():
     t = str(now())
     return t[:16]

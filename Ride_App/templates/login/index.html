@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}Ride Sharing System{% endblock %}
+{% block css %}
+    <link href="/static/css/login.css" rel="stylesheet" />
+{% endblock %}
+{% csrf_token %}
 
-</body>
-</html>
+
+{% block content %}
+    <div class="container">
+        <div class="col-md-4 col-md-offset-4">
+            <h1>Welcome to Ride Sharing Web App!</h1>
+        </div>
+    </div>
+{% endblock %}
